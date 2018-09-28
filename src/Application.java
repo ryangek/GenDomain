@@ -48,7 +48,7 @@ public class Application {
 					Application window = new Application();
 					window.frmGenerateDomain.setVisible(true);
 					config = new Config();
-					con = new SQLConnect(config.getUrl(), config.getUsername(), config.getPassword()).getConnection();
+					// con = new SQLConnect(config.getUrl(), config.getUsername(), config.getPassword()).getConnection();
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -104,89 +104,100 @@ public class Application {
 //					// TODO Auto-generated catch block
 //					e2.printStackTrace();
 //				}
-				String sql = "";
-				PreparedStatement pre = null;
-				sql += " SELECT table_name, column_name, data_type, data_length ";
-				sql += " FROM USER_TAB_COLUMNS ";
-				sql += " WHERE table_name = ? ";
-				try {
-					con = new SQLConnect(config.getUrl(), config.getUsername(), config.getPassword()).getConnection();
-					pre = con.prepareStatement(sql);
-					pre.setString(1, textField.getText());
-					ResultSet rs = pre.executeQuery();
-					String txt = "";
-					String[] rsArr;
-					String t = "";
-					txt += "public class ";
-					String[] txtInp = textField.getText().split("_");
-					txt += arrayToString(0, txtInp);
-					t = "";
-					txt += " {\n";
-					while(rs.next()) {
-						rsArr = rs.getString("COLUMN_NAME").split("_");
-						txt += "\tprivate ";
-						txt += new TypeMapping(config.getTypeSQL(), config.getTypeJava()).TypeMap(rs.getString("DATA_TYPE")) + " ";
-						txt += rsArr[0].toLowerCase();
-						txt += arrayToString(1, rsArr);
-						txt += ";\n";
-					}
-					rs = pre.executeQuery();
-					while(rs.next()) {
-						rsArr = rs.getString("COLUMN_NAME").split("_");
-						txt += "\tpublic ";
-						txt += new TypeMapping(config.getTypeSQL(), config.getTypeJava()).TypeMap(rs.getString("DATA_TYPE")) + " get";
-						txt += arrayToString(0, rsArr);
-						txt += "() {\n";
-						txt += "\t\treturn ";
-						txt += rsArr[0].toLowerCase();
-						txt += arrayToString(1, rsArr);
-						txt += ";\n";
-						txt += "\t}\n";
-						txt += "\tpublic ";
-						txt += "void set";
-						txt += arrayToString(0, rsArr);
-						txt += "(";
-						txt += new TypeMapping(config.getTypeSQL(), config.getTypeJava()).TypeMap(rs.getString("DATA_TYPE")) + " ";
-						txt += rsArr[0].toLowerCase();
-						txt += arrayToString(1, rsArr);
-						txt += ") {\n";
-						txt += "\t\tthis." + rsArr[0].toLowerCase();
-						txt += arrayToString(1, rsArr);
-						txt += " = ";
-						txt += rsArr[0].toLowerCase();
-						txt += arrayToString(1, rsArr);
-						txt += ";\n";
-						txt += "\t}\n";
-					}
-					txt += "}";
-					textPane.setText(txt);
-					FileOutputStream out;
-					File f = new File("./domain/"); // initial file (folder)
-			        if (!f.exists()) { // check folder exists
-			            if (f.mkdirs()) {
-			                System.out.println("Directory is created!");
-			            } else {
-			            	System.out.println("Failed to create directory!");
-			            }
-			        }
-					try {
-						out = new FileOutputStream("./domain/" + arrayToString(0, txtInp) + ".java");
-						try {
-							out.write(txt.getBytes());
-							out.close();
-						} catch (IOException e1) {
-							// TODO Auto-generated catch block
-							e1.printStackTrace();
-						}
-					} catch (FileNotFoundException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
-					}
-					con.close();
-				} catch (SQLException e2) {
-					// TODO Auto-generated catch block
-					e2.printStackTrace();
-				}
+//				String sql = "";
+//				PreparedStatement pre = null;
+//				sql += " SELECT table_name, column_name, data_type, data_length ";
+//				sql += " FROM INFORMATION_SCHEMA.COLUMNS ";
+//				sql += " WHERE table_name = ? ";
+//				try {
+//					con = new SQLConnect(config.getUrl(), config.getUsername(), config.getPassword()).getConnection();
+//					pre = con.prepareStatement(sql);
+//					pre.setString(1, "ECERT_REQUEST_FORM");
+//					ResultSet rs = pre.executeQuery();
+//					while(rs.next()) {
+//						System.out.println("" + rs.getString("DATA_TYPE") + rs.getString("COLUMN_NAME"));
+//					}
+//				} catch (Exception ex) {
+//					ex.printStackTrace();
+//				}
+//				try {
+//					con = new SQLConnect(config.getUrl(), config.getUsername(), config.getPassword()).getConnection();
+//					pre = con.prepareStatement(sql);
+//					pre.setString(1, textField.getText());
+//					ResultSet rs = pre.executeQuery();
+//					String txt = "";
+//					String[] rsArr;
+//					String t = "";
+//					txt += "public class ";
+//					String[] txtInp = textField.getText().split("_");
+//					txt += arrayToString(0, txtInp);
+//					t = "";
+//					txt += " {\n";
+//					while(rs.next()) {
+//						rsArr = rs.getString("COLUMN_NAME").split("_");
+//						txt += "\tprivate ";
+//						txt += new TypeMapping(config.getTypeSQL(), config.getTypeJava()).TypeMap(rs.getString("DATA_TYPE")) + " ";
+//						txt += rsArr[0].toLowerCase();
+//						txt += arrayToString(1, rsArr);
+//						txt += ";\n";
+//					}
+//					rs = pre.executeQuery();
+//					while(rs.next()) {
+//						rsArr = rs.getString("COLUMN_NAME").split("_");
+//						txt += "\tpublic ";
+//						txt += new TypeMapping(config.getTypeSQL(), config.getTypeJava()).TypeMap(rs.getString("DATA_TYPE")) + " get";
+//						txt += arrayToString(0, rsArr);
+//						txt += "() {\n";
+//						txt += "\t\treturn ";
+//						txt += rsArr[0].toLowerCase();
+//						txt += arrayToString(1, rsArr);
+//						txt += ";\n";
+//						txt += "\t}\n";
+//						txt += "\tpublic ";
+//						txt += "void set";
+//						txt += arrayToString(0, rsArr);
+//						txt += "(";
+//						txt += new TypeMapping(config.getTypeSQL(), config.getTypeJava()).TypeMap(rs.getString("DATA_TYPE")) + " ";
+//						txt += rsArr[0].toLowerCase();
+//						txt += arrayToString(1, rsArr);
+//						txt += ") {\n";
+//						txt += "\t\tthis." + rsArr[0].toLowerCase();
+//						txt += arrayToString(1, rsArr);
+//						txt += " = ";
+//						txt += rsArr[0].toLowerCase();
+//						txt += arrayToString(1, rsArr);
+//						txt += ";\n";
+//						txt += "\t}\n";
+//					}
+//					txt += "}";
+//					textPane.setText(txt);
+//					FileOutputStream out;
+//					File f = new File("./domain/"); // initial file (folder)
+//			        if (!f.exists()) { // check folder exists
+//			            if (f.mkdirs()) {
+//			                System.out.println("Directory is created!");
+//			            } else {
+//			            	System.out.println("Failed to create directory!");
+//			            }
+//			        }
+//					try {
+//						out = new FileOutputStream("./domain/" + arrayToString(0, txtInp) + ".java");
+//						try {
+//							out.write(txt.getBytes());
+//							out.close();
+//						} catch (IOException e1) {
+//							// TODO Auto-generated catch block
+//							e1.printStackTrace();
+//						}
+//					} catch (FileNotFoundException e1) {
+//						// TODO Auto-generated catch block
+//						e1.printStackTrace();
+//					}
+//					con.close();
+//				} catch (SQLException e2) {
+//					// TODO Auto-generated catch block
+//					e2.printStackTrace();
+//				}
 			}
 		});
 		btnNewButton.setBounds(443, 11, 131, 35);
@@ -235,18 +246,18 @@ public class Application {
 	private String[] listTable() {
 		ArrayList<String> str = new ArrayList<String>();
 		config = new Config();
-		String sql = "";
-		PreparedStatement pre = null;
-		sql += " SELECT DISTINCT OBJECT_NAME ";
-		sql += " FROM USER_OBJECTS ";
-		sql += " WHERE OBJECT_TYPE = 'TABLE' ";
+//		String sql = "";
+//		PreparedStatement pre = null;
+//		sql += " SELECT DISTINCT OBJECT_NAME ";
+//		sql += " FROM USER_OBJECTS ";
+//		sql += " WHERE OBJECT_TYPE = 'TABLE' ";
 		try {
 			con = new SQLConnect(config.getUrl(), config.getUsername(), config.getPassword()).getConnection();
-			pre = con.prepareStatement(sql);
-			ResultSet rs = pre.executeQuery();
-			while(rs.next()) {
-				str.add(rs.getString("OBJECT_NAME"));
-			}
+//			pre = con.prepareStatement(sql);
+//			ResultSet rs = pre.executeQuery();
+//			while(rs.next()) {
+//				str.add(rs.getString("OBJECT_NAME"));
+//			}
 			con.close();
 			return str.toArray(new String[str.size()]);
 		} catch (SQLException e) {
